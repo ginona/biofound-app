@@ -16,8 +16,8 @@ export function CategoryChip({ category, active = false }: CategoryChipProps) {
       href={href}
       className={`inline-block px-4 py-2 rounded-full text-sm font-medium transition-colors ${
         active
-          ? "bg-black text-white"
-          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+          ? "bg-primary text-primary-foreground"
+          : "bg-secondary text-foreground border border-border hover:bg-secondary/80"
       }`}
     >
       {category}

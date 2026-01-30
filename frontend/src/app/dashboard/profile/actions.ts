@@ -18,6 +18,10 @@ export async function updateProfile(
   const linkTwitter = formData.get("linkTwitter") as string;
   const linkOnlyfans = formData.get("linkOnlyfans") as string;
   const linkWebsite = formData.get("linkWebsite") as string;
+  const longBio = formData.get("longBio") as string;
+  const seoTitle = formData.get("seoTitle") as string;
+  const seoDescription = formData.get("seoDescription") as string;
+  const backgroundTheme = formData.get("backgroundTheme") as string;
 
   try {
     const res = await fetch(`${API_URL}/profile`, {
@@ -36,6 +40,10 @@ export async function updateProfile(
         linkTwitter: linkTwitter || undefined,
         linkOnlyfans: linkOnlyfans || undefined,
         linkWebsite: linkWebsite || undefined,
+        longBio: longBio || undefined,
+        seoTitle: seoTitle || undefined,
+        seoDescription: seoDescription || undefined,
+        backgroundTheme: backgroundTheme ? parseInt(backgroundTheme, 10) : undefined,
       }),
     });
 

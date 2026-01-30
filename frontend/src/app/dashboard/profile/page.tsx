@@ -20,16 +20,16 @@ export default async function EditProfilePage() {
   if (!profile || !session?.backendToken) {
     return (
       <div className="text-center py-16">
-        <p className="text-gray-500">Unable to load profile</p>
+        <p className="text-muted-foreground">Unable to load profile</p>
       </div>
     );
   }
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-8">Edit Profile</h1>
+    <div className="w-full">
+      <h1 className="text-xl font-semibold text-foreground mb-8">Edit Profile</h1>
 
-      <div className="max-w-lg">
+      <div className="max-w-2xl mx-auto w-full">
         <EditProfileForm profile={profile} backendToken={session.backendToken} />
       </div>
     </div>

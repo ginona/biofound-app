@@ -16,6 +16,7 @@ export async function createProfile(
   const displayName = formData.get("displayName") as string;
   const category = formData.get("category") as string;
   const bio = formData.get("bio") as string;
+  const longBio = formData.get("longBio") as string;
   const city = formData.get("city") as string;
   const country = formData.get("country") as string;
 
@@ -31,6 +32,7 @@ export async function createProfile(
         displayName,
         category,
         bio: bio || undefined,
+        longBio: longBio || undefined,
         city: city || undefined,
         country: country || undefined,
       }),

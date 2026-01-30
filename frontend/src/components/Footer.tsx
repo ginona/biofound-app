@@ -2,17 +2,20 @@ import Link from "next/link";
 
 export function Footer() {
   return (
-    <footer className="bg-gray-50 border-t border-gray-200 py-8">
-      <div className="max-w-6xl mx-auto px-4">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-          <Link href="/" className="text-lg font-bold text-gray-900">
-            BioFound
-          </Link>
-
-          <p className="text-sm text-gray-500">
-            &copy; {new Date().getFullYear()} BioFound. All rights reserved.
-          </p>
+    <footer className="border-t border-border px-4 py-6">
+      <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+        <Link href="/" className="text-base font-semibold tracking-tight text-foreground">
+          biofound<span className="text-primary">.</span>
+        </Link>
+        <div className="flex items-center gap-6 text-sm text-muted-foreground">
+          <Link href="#" className="hover:text-foreground transition-colors">About</Link>
+          <Link href="#" className="hover:text-foreground transition-colors">Privacy</Link>
+          <Link href="#" className="hover:text-foreground transition-colors">Terms</Link>
+          <Link href="#" className="hover:text-foreground transition-colors">Contact</Link>
         </div>
+        <p className="text-xs text-muted-foreground">
+          © {new Date().getFullYear()} biofound
+        </p>
       </div>
     </footer>
   );

@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { auth, signIn } from "@/auth";
+import { auth, signIn, signOut } from "@/auth";
 import { fetchWithAuth } from "@/lib/api";
 import { ProfileExistsResponse } from "@/lib/types";
 
@@ -7,25 +7,40 @@ export default async function SignInPage() {
   const session = await auth();
 
   if (session?.backendToken) {
+    let profileExists = false;
+    let shouldSignOut = false;
+
     try {
       const { exists } = await fetchWithAuth<ProfileExistsResponse>(
         "/profile/exists",
         session.backendToken
       );
-      redirect(exists ? "/dashboard" : "/onboarding");
-    } catch {
-      redirect("/onboarding");
+      profileExists = exists;
+    } catch (error) {
+      // If backend rejects the token (user deleted, token expired, etc.)
+      if (error instanceof Error && error.message.includes("401")) {
+        shouldSignOut = true;
+      }
+      // For other errors, default to onboarding
+    }
+
+    if (shouldSignOut) {
+      await signOut({ redirect: false });
+      // Don't redirect, let the page render the sign in form
+    } else {
+      // Redirect outside try-catch (redirect throws an exception in Next.js)
+      redirect(profileExists ? "/dashboard" : "/onboarding");
     }
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-background px-4">
       <div className="max-w-sm w-full">
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+          <h1 className="text-xl font-semibold text-foreground mb-2">
             Sign in to BioFound
           </h1>
-          <p className="text-gray-600">
+          <p className="text-sm text-muted-foreground">
             Create your profile and get discovered
           </p>
         </div>
@@ -38,7 +53,7 @@ export default async function SignInPage() {
         >
           <button
             type="submit"
-            className="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 rounded-lg px-4 py-3 text-gray-700 font-medium hover:bg-gray-50 transition-colors cursor-pointer"
+            className="w-full flex items-center justify-center gap-3 bg-card border border-border rounded-xl px-4 py-3 text-foreground font-medium hover:bg-secondary/50 transition-colors cursor-pointer"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path

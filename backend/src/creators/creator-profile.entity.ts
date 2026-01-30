@@ -53,6 +53,19 @@ export class CreatorProfile {
   @Column({ type: 'varchar', length: 255, nullable: true })
   linkWebsite: string | null;
 
+  // SEO Fields
+  @Column({ type: 'varchar', length: 60, nullable: true })
+  seoTitle: string | null;
+
+  @Column({ type: 'varchar', length: 160, nullable: true })
+  seoDescription: string | null;
+
+  @Column({ type: 'text', nullable: true })
+  longBio: string | null;
+
+  @Column({ type: 'smallint', default: 0 })
+  backgroundTheme: number; // 0: Gradient, 1: Dots, 2: Waves, 3: Grid, 4: Minimal
+
   @CreateDateColumn()
   createdAt: Date;
 

@@ -24,13 +24,13 @@ export default async function OnboardingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4">
-      <div className="max-w-lg mx-auto">
+    <div className="min-h-screen bg-background py-14 px-4">
+      <div className="max-w-2xl mx-auto">
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+          <h1 className="text-xl font-semibold text-foreground mb-2">
             Create Your Profile
           </h1>
-          <p className="text-gray-600">
+          <p className="text-sm text-muted-foreground">
             Tell us about yourself to get discovered
           </p>
         </div>

@@ -52,6 +52,10 @@ export class CreatorsService {
       linkTwitter: dto.linkTwitter || null,
       linkOnlyfans: dto.linkOnlyfans || null,
       linkWebsite: dto.linkWebsite || null,
+      seoTitle: dto.seoTitle || null,
+      seoDescription: dto.seoDescription || null,
+      longBio: dto.longBio || null,
+      backgroundTheme: dto.backgroundTheme ?? 0,
     });
 
     return this.profileRepository.save(profile);
@@ -77,6 +81,10 @@ export class CreatorsService {
     if (dto.linkTwitter !== undefined) profile.linkTwitter = dto.linkTwitter || null;
     if (dto.linkOnlyfans !== undefined) profile.linkOnlyfans = dto.linkOnlyfans || null;
     if (dto.linkWebsite !== undefined) profile.linkWebsite = dto.linkWebsite || null;
+    if (dto.seoTitle !== undefined) profile.seoTitle = dto.seoTitle || null;
+    if (dto.seoDescription !== undefined) profile.seoDescription = dto.seoDescription || null;
+    if (dto.longBio !== undefined) profile.longBio = dto.longBio || null;
+    if (dto.backgroundTheme !== undefined) profile.backgroundTheme = dto.backgroundTheme;
 
     return this.profileRepository.save(profile);
   }

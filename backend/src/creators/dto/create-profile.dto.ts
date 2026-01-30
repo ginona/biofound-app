@@ -4,6 +4,9 @@ import {
   IsOptional,
   IsArray,
   IsUrl,
+  IsInt,
+  Min,
+  Max,
   MaxLength,
   MinLength,
   Matches,
@@ -71,4 +74,26 @@ export class CreateProfileDto {
   @IsUrl()
   @MaxLength(255)
   linkWebsite?: string;
+
+  // SEO Fields
+  @IsOptional()
+  @IsString()
+  @MaxLength(60)
+  seoTitle?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(160)
+  seoDescription?: string;
+
+  @IsOptional()
+  @IsString()
+  @MinLength(100)
+  longBio?: string;
+
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  @Max(4)
+  backgroundTheme?: number;
 }

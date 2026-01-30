@@ -1,7 +1,8 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { fetchWithAuth } from "@/lib/api";
-import { CreatorProfile } from "@/lib/types";
+import { CreatorProfile, ProfileExistsResponse } from "@/lib/types";
 
 async function getProfile(backendToken: string): Promise<CreatorProfile | null> {
   try {
@@ -11,16 +12,37 @@ async function getProfile(backendToken: string): Promise<CreatorProfile | null> 
   }
 }
 
+async function checkProfileExists(backendToken: string): Promise<boolean> {
+  try {
+    const { exists } = await fetchWithAuth<ProfileExistsResponse>(
+      "/profile/exists",
+      backendToken
+    );
+    return exists;
+  } catch {
+    return false;
+  }
+}
+
 export default async function DashboardPage() {
   const session = await auth();
-  const profile = session?.backendToken
-    ? await getProfile(session.backendToken)
-    : null;
 
+  if (!session?.backendToken) {
+    redirect("/auth/signin");
+  }
+
+  const profile = await getProfile(session.backendToken);
+
+  // If no profile, check if it exists and redirect to onboarding if needed
   if (!profile) {
+    const exists = await checkProfileExists(session.backendToken);
+    if (!exists) {
+      redirect("/onboarding");
+    }
+    // Profile exists but failed to load - show error
     return (
       <div className="text-center py-16">
-        <p className="text-gray-500">Unable to load profile</p>
+        <p className="text-muted-foreground">Unable to load profile. Please try again.</p>
       </div>
     );
   }
@@ -28,10 +50,10 @@ export default async function DashboardPage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+        <h1 className="text-xl font-semibold text-foreground">Dashboard</h1>
         <Link
           href={`/bio/${profile.username}`}
-          className="text-sm text-blue-600 hover:text-blue-700"
+          className="text-sm text-primary hover:underline"
           target="_blank"
         >
           View Public Profile &rarr;
@@ -39,33 +61,35 @@ export default async function DashboardPage() {
       </div>
 
       {/* Profile Summary */}
-      <div className="bg-white rounded-xl p-6 border border-gray-200 mb-6">
+      <div className="bg-card rounded-xl p-6 border border-border mb-6">
         <div className="flex items-center gap-4 mb-4">
-          <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full" />
+          <div className="w-16 h-16 rounded-full bg-secondary flex items-center justify-center text-xl font-semibold text-muted-foreground">
+            {profile.displayName?.charAt(0)?.toUpperCase() ?? "?"}
+          </div>
           <div>
-            <h2 className="text-xl font-semibold text-gray-900">
+            <h2 className="text-xl font-semibold text-foreground">
               {profile.displayName}
             </h2>
-            <p className="text-gray-500">@{profile.username}</p>
+            <p className="text-sm text-muted-foreground">@{profile.username}</p>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t border-gray-100">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t border-border">
           <div>
-            <p className="text-sm text-gray-500">Category</p>
-            <p className="font-medium">{profile.category}</p>
+            <p className="text-sm text-muted-foreground">Category</p>
+            <p className="font-medium text-foreground">{profile.category}</p>
           </div>
           <div>
-            <p className="text-sm text-gray-500">Location</p>
-            <p className="font-medium">
+            <p className="text-sm text-muted-foreground">Location</p>
+            <p className="font-medium text-foreground">
               {profile.city && profile.country
                 ? `${profile.city}, ${profile.country}`
                 : "Not set"}
             </p>
           </div>
           <div>
-            <p className="text-sm text-gray-500">Links</p>
-            <p className="font-medium">
+            <p className="text-sm text-muted-foreground">Links</p>
+            <p className="font-medium text-foreground">
               {[
                 profile.linkInstagram,
                 profile.linkTwitter,
@@ -76,8 +100,8 @@ export default async function DashboardPage() {
             </p>
           </div>
           <div>
-            <p className="text-sm text-gray-500">Joined</p>
-            <p className="font-medium">
+            <p className="text-sm text-muted-foreground">Joined</p>
+            <p className="font-medium text-foreground">
               {new Date(profile.createdAt).toLocaleDateString()}
             </p>
           </div>
@@ -88,20 +112,20 @@ export default async function DashboardPage() {
       <div className="grid md:grid-cols-2 gap-4">
         <Link
           href="/dashboard/profile"
-          className="bg-white rounded-xl p-6 border border-gray-200 hover:border-gray-300 transition-colors"
+          className="bg-card rounded-xl p-6 border border-border block"
         >
-          <h3 className="font-semibold text-gray-900 mb-1">Edit Profile</h3>
-          <p className="text-sm text-gray-500">
+          <h3 className="font-semibold text-foreground mb-1">Edit Profile</h3>
+          <p className="text-sm text-muted-foreground">
             Update your bio, links, and other details
           </p>
         </Link>
 
         <Link
           href="/directory"
-          className="bg-white rounded-xl p-6 border border-gray-200 hover:border-gray-300 transition-colors"
+          className="bg-card rounded-xl p-6 border border-border block"
         >
-          <h3 className="font-semibold text-gray-900 mb-1">Browse Directory</h3>
-          <p className="text-sm text-gray-500">
+          <h3 className="font-semibold text-foreground mb-1">Browse Directory</h3>
+          <p className="text-sm text-muted-foreground">
             Discover other creators in your niche
           </p>
         </Link>

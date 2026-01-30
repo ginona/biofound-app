@@ -12,6 +12,12 @@ export interface CreatorProfile {
   linkTwitter: string | null;
   linkOnlyfans: string | null;
   linkWebsite: string | null;
+  // SEO Fields
+  seoTitle: string | null;
+  seoDescription: string | null;
+  longBio: string | null;
+  // Theme
+  backgroundTheme: number;
   createdAt: string;
   updatedAt: string;
 }

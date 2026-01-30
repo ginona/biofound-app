@@ -28,24 +28,24 @@ export default async function DashboardLayout({
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       {/* Dashboard Header */}
-      <header className="bg-white border-b border-gray-200">
-        <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
-          <Link href="/dashboard" className="text-xl font-bold text-gray-900">
+      <header className="bg-card border-b border-border">
+        <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
+          <Link href="/dashboard" className="text-xl font-semibold text-foreground">
             BioFound
           </Link>
 
           <nav className="flex items-center gap-4">
             <Link
               href="/dashboard"
-              className="text-sm text-gray-600 hover:text-gray-900"
+              className="text-sm text-muted-foreground hover:text-foreground"
             >
               Dashboard
             </Link>
             <Link
               href="/dashboard/profile"
-              className="text-sm text-gray-600 hover:text-gray-900"
+              className="text-sm text-muted-foreground hover:text-foreground"
             >
               Edit Profile
             </Link>
@@ -57,7 +57,7 @@ export default async function DashboardLayout({
             >
               <button
                 type="submit"
-                className="text-sm text-gray-600 hover:text-gray-900 cursor-pointer"
+                className="text-sm text-muted-foreground hover:text-foreground cursor-pointer"
               >
                 Sign Out
               </button>
@@ -66,7 +66,7 @@ export default async function DashboardLayout({
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-4 py-8">{children}</main>
+      <main className="max-w-5xl mx-auto px-4 py-8">{children}</main>
     </div>
   );
 }

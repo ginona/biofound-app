@@ -9,22 +9,24 @@ export function CreatorCard({ creator }: CreatorCardProps) {
   return (
     <Link
       href={`/bio/${creator.username}`}
-      className="block bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow min-w-[200px]"
+      className="block bg-card border border-border rounded-xl p-4 min-w-[200px]"
     >
-      <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full mb-3" />
+      <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center text-lg font-semibold text-muted-foreground mb-3">
+        {creator.displayName?.charAt(0)?.toUpperCase() ?? "?"}
+      </div>
 
-      <h3 className="font-semibold text-gray-900 truncate">
+      <h3 className="font-semibold text-foreground truncate">
         {creator.displayName}
       </h3>
 
-      <p className="text-sm text-gray-500 mb-2">{creator.category}</p>
+      <p className="text-sm text-muted-foreground mb-2">{creator.category}</p>
 
       {creator.bio && (
-        <p className="text-sm text-gray-600 line-clamp-2">{creator.bio}</p>
+        <p className="text-sm text-muted-foreground line-clamp-2">{creator.bio}</p>
       )}
 
       {creator.city && creator.country && (
-        <p className="text-xs text-gray-400 mt-2">
+        <p className="text-xs text-muted-foreground mt-2">
           {creator.city}, {creator.country}
         </p>
       )}

@@ -43,12 +43,12 @@ export default async function DirectoryPage({ searchParams }: DirectoryPageProps
   const result = await getCreators(category, q, page);
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-background text-foreground">
       <Header />
 
-      <main className="flex-1 py-8 px-4">
-        <div className="max-w-6xl mx-auto">
-          <h1 className="text-3xl font-bold text-gray-900 mb-6">
+      <main className="flex-1 py-14 px-4">
+        <div className="max-w-5xl mx-auto">
+          <h1 className="text-xl font-semibold text-foreground mb-6">
             Creator Directory
           </h1>
 
@@ -73,8 +73,8 @@ export default async function DirectoryPage({ searchParams }: DirectoryPageProps
             </div>
           ) : (
             <div className="text-center py-16">
-              <p className="text-gray-500 text-lg">No creators found</p>
-              <p className="text-gray-400 text-sm mt-2">
+              <p className="text-muted-foreground text-base">No creators found</p>
+              <p className="text-sm text-muted-foreground mt-2">
                 Try adjusting your filters or search terms
               </p>
             </div>
@@ -82,7 +82,7 @@ export default async function DirectoryPage({ searchParams }: DirectoryPageProps
 
           {/* Pagination Info */}
           {result.meta.totalPages > 1 && (
-            <div className="mt-8 text-center text-sm text-gray-500">
+            <div className="mt-8 text-center text-sm text-muted-foreground">
               Page {result.meta.page} of {result.meta.totalPages} ({result.meta.total} creators)
             </div>
           )}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { createProfile } from "./actions";
 
 const CATEGORIES = [
@@ -12,6 +12,7 @@ const CATEGORIES = [
   "Gaming",
   "Lifestyle",
   "Education",
+  "Professional",
   "Other",
 ];
 
@@ -24,20 +25,25 @@ export function OnboardingForm({ backendToken }: OnboardingFormProps) {
     createProfile.bind(null, backendToken),
     { error: null, success: false }
   );
+  const [longBioLength, setLongBioLength] = useState(0);
 
   if (state.success) {
     return (
-      <div className="bg-white rounded-xl p-6 shadow-sm text-center">
-        <meta httpEquiv="refresh" content="0;url=/dashboard" />
-        <p className="text-gray-600">Profile created! Redirecting...</p>
+      <div className="bg-card rounded-xl p-6 border border-border text-center">
+        <meta httpEquiv="refresh" content="2;url=/dashboard" />
+        <p className="text-foreground font-semibold mb-2">Profile created!</p>
+        <p className="text-sm text-muted-foreground">
+          Tip: Go to your dashboard to add SEO title and description for even better Google rankings.
+        </p>
+        <p className="text-xs text-muted-foreground mt-4">Redirecting...</p>
       </div>
     );
   }
 
   return (
-    <form action={formAction} className="bg-white rounded-xl p-6 shadow-sm">
+    <form action={formAction} className="bg-card rounded-xl p-6 border border-border">
       {state.error && (
-        <div className="mb-4 p-3 bg-red-50 text-red-700 rounded-lg text-sm">
+        <div className="mb-4 p-3 bg-destructive/10 text-destructive rounded-md text-sm">
           {state.error}
         </div>
       )}
@@ -46,7 +52,7 @@ export function OnboardingForm({ backendToken }: OnboardingFormProps) {
         <div>
           <label
             htmlFor="username"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-medium text-foreground mb-1.5"
           >
             Username
           </label>
@@ -58,10 +64,10 @@ export function OnboardingForm({ backendToken }: OnboardingFormProps) {
             pattern="^[a-z0-9_]+$"
             minLength={3}
             maxLength={30}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
+            className="w-full px-3 py-2 border border-border rounded-md bg-input focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
             placeholder="yourname"
           />
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="text-xs text-muted-foreground mt-1">
             Lowercase letters, numbers, and underscores only
           </p>
         </div>
@@ -69,7 +75,7 @@ export function OnboardingForm({ backendToken }: OnboardingFormProps) {
         <div>
           <label
             htmlFor="displayName"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-medium text-foreground mb-1.5"
           >
             Display Name
           </label>
@@ -79,7 +85,7 @@ export function OnboardingForm({ backendToken }: OnboardingFormProps) {
             name="displayName"
             required
             maxLength={100}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
+            className="w-full px-3 py-2 border border-border rounded-md bg-input focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
             placeholder="Your Name"
           />
         </div>
@@ -87,7 +93,7 @@ export function OnboardingForm({ backendToken }: OnboardingFormProps) {
         <div>
           <label
             htmlFor="category"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-medium text-foreground mb-1.5"
           >
             Category
           </label>
@@ -95,7 +101,7 @@ export function OnboardingForm({ backendToken }: OnboardingFormProps) {
             id="category"
             name="category"
             required
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
+            className="w-full px-3 py-2 border border-border rounded-md bg-input focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
           >
             <option value="">Select a category</option>
             {CATEGORIES.map((cat) => (
@@ -109,7 +115,7 @@ export function OnboardingForm({ backendToken }: OnboardingFormProps) {
         <div>
           <label
             htmlFor="bio"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-medium text-foreground mb-1.5"
           >
             Bio (optional)
           </label>
@@ -118,16 +124,38 @@ export function OnboardingForm({ backendToken }: OnboardingFormProps) {
             name="bio"
             rows={3}
             maxLength={500}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent resize-none"
+            className="w-full px-3 py-2 border border-border rounded-md bg-input focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 resize-none"
             placeholder="Tell us about yourself..."
           />
+        </div>
+
+        <div>
+          <label
+            htmlFor="longBio"
+            className="block text-sm font-medium text-foreground mb-1.5"
+          >
+            Extended Bio <span className="text-muted-foreground font-normal">(helps you get discovered on Google)</span>
+          </label>
+          <textarea
+            id="longBio"
+            name="longBio"
+            required
+            minLength={100}
+            rows={6}
+            className="w-full px-3 py-2 border border-border rounded-md bg-input focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 resize-none"
+            placeholder="Write a detailed description of what you do, your specialties, and what makes you unique. Include keywords people might search for (e.g., 'cosplay creator', 'wedding photographer Buenos Aires', 'fitness coach'). Minimum 100 characters."
+            onChange={(e) => setLongBioLength(e.target.value.length)}
+          />
+          <p className={`text-xs mt-1 ${longBioLength >= 100 ? "text-primary" : "text-muted-foreground"}`}>
+            {longBioLength}/100 characters {longBioLength >= 100 && "✓"}
+          </p>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label
               htmlFor="city"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-foreground mb-1.5"
             >
               City (optional)
             </label>
@@ -136,13 +164,13 @@ export function OnboardingForm({ backendToken }: OnboardingFormProps) {
               id="city"
               name="city"
               maxLength={100}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
+              className="w-full px-3 py-2 border border-border rounded-md bg-input focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
             />
           </div>
           <div>
             <label
               htmlFor="country"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-foreground mb-1.5"
             >
               Country (optional)
             </label>
@@ -151,7 +179,7 @@ export function OnboardingForm({ backendToken }: OnboardingFormProps) {
               id="country"
               name="country"
               maxLength={100}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
+              className="w-full px-3 py-2 border border-border rounded-md bg-input focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
             />
           </div>
         </div>
@@ -160,7 +188,7 @@ export function OnboardingForm({ backendToken }: OnboardingFormProps) {
       <button
         type="submit"
         disabled={pending}
-        className="w-full mt-6 bg-black text-white py-3 rounded-full font-medium hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
+        className="w-full mt-6 bg-primary text-primary-foreground py-3 rounded-xl font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
       >
         {pending ? "Creating..." : "Create Profile"}
       </button>
