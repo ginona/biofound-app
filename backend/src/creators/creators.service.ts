@@ -3,24 +3,20 @@ import {
   ConflictException,
   NotFoundException,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { CreatorProfile } from './creator-profile.entity';
+import { PrismaService } from '../prisma/prisma.service';
+import { CreatorProfile } from '@prisma/client';
 import { CreateProfileDto, UpdateProfileDto } from './dto';
 
 @Injectable()
 export class CreatorsService {
-  constructor(
-    @InjectRepository(CreatorProfile)
-    private readonly profileRepository: Repository<CreatorProfile>,
-  ) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async findByUserId(userId: string): Promise<CreatorProfile | null> {
-    return this.profileRepository.findOne({ where: { userId } });
+    return this.prisma.creatorProfile.findUnique({ where: { userId } });
   }
 
   async findByUsername(username: string): Promise<CreatorProfile | null> {
-    return this.profileRepository.findOne({ where: { username } });
+    return this.prisma.creatorProfile.findUnique({ where: { username } });
   }
 
   async create(
@@ -39,26 +35,26 @@ export class CreatorsService {
       throw new ConflictException('Username is already taken');
     }
 
-    const profile = this.profileRepository.create({
-      userId,
-      username: dto.username.toLowerCase(),
-      displayName: dto.displayName,
-      bio: dto.bio || null,
-      category: dto.category,
-      tags: dto.tags || null,
-      city: dto.city || null,
-      country: dto.country || null,
-      linkInstagram: dto.linkInstagram || null,
-      linkTwitter: dto.linkTwitter || null,
-      linkOnlyfans: dto.linkOnlyfans || null,
-      linkWebsite: dto.linkWebsite || null,
-      seoTitle: dto.seoTitle || null,
-      seoDescription: dto.seoDescription || null,
-      longBio: dto.longBio || null,
-      backgroundTheme: dto.backgroundTheme ?? 0,
+    return this.prisma.creatorProfile.create({
+      data: {
+        userId,
+        username: dto.username.toLowerCase(),
+        displayName: dto.displayName,
+        bio: dto.bio || null,
+        category: dto.category,
+        tags: dto.tags || [],
+        city: dto.city || null,
+        country: dto.country || null,
+        linkInstagram: dto.linkInstagram || null,
+        linkTwitter: dto.linkTwitter || null,
+        linkOnlyfans: dto.linkOnlyfans || null,
+        linkWebsite: dto.linkWebsite || null,
+        seoTitle: dto.seoTitle || null,
+        seoDescription: dto.seoDescription || null,
+        longBio: dto.longBio || null,
+        backgroundTheme: dto.backgroundTheme ?? 0,
+      },
     });
-
-    return this.profileRepository.save(profile);
   }
 
   async update(
@@ -70,27 +66,29 @@ export class CreatorsService {
       throw new NotFoundException('Profile not found');
     }
 
-    // Update only provided fields
-    if (dto.displayName !== undefined) profile.displayName = dto.displayName;
-    if (dto.bio !== undefined) profile.bio = dto.bio || null;
-    if (dto.category !== undefined) profile.category = dto.category;
-    if (dto.tags !== undefined) profile.tags = dto.tags || null;
-    if (dto.city !== undefined) profile.city = dto.city || null;
-    if (dto.country !== undefined) profile.country = dto.country || null;
-    if (dto.linkInstagram !== undefined) profile.linkInstagram = dto.linkInstagram || null;
-    if (dto.linkTwitter !== undefined) profile.linkTwitter = dto.linkTwitter || null;
-    if (dto.linkOnlyfans !== undefined) profile.linkOnlyfans = dto.linkOnlyfans || null;
-    if (dto.linkWebsite !== undefined) profile.linkWebsite = dto.linkWebsite || null;
-    if (dto.seoTitle !== undefined) profile.seoTitle = dto.seoTitle || null;
-    if (dto.seoDescription !== undefined) profile.seoDescription = dto.seoDescription || null;
-    if (dto.longBio !== undefined) profile.longBio = dto.longBio || null;
-    if (dto.backgroundTheme !== undefined) profile.backgroundTheme = dto.backgroundTheme;
-
-    return this.profileRepository.save(profile);
+    return this.prisma.creatorProfile.update({
+      where: { userId },
+      data: {
+        ...(dto.displayName !== undefined && { displayName: dto.displayName }),
+        ...(dto.bio !== undefined && { bio: dto.bio || null }),
+        ...(dto.category !== undefined && { category: dto.category }),
+        ...(dto.tags !== undefined && { tags: dto.tags || [] }),
+        ...(dto.city !== undefined && { city: dto.city || null }),
+        ...(dto.country !== undefined && { country: dto.country || null }),
+        ...(dto.linkInstagram !== undefined && { linkInstagram: dto.linkInstagram || null }),
+        ...(dto.linkTwitter !== undefined && { linkTwitter: dto.linkTwitter || null }),
+        ...(dto.linkOnlyfans !== undefined && { linkOnlyfans: dto.linkOnlyfans || null }),
+        ...(dto.linkWebsite !== undefined && { linkWebsite: dto.linkWebsite || null }),
+        ...(dto.seoTitle !== undefined && { seoTitle: dto.seoTitle || null }),
+        ...(dto.seoDescription !== undefined && { seoDescription: dto.seoDescription || null }),
+        ...(dto.longBio !== undefined && { longBio: dto.longBio || null }),
+        ...(dto.backgroundTheme !== undefined && { backgroundTheme: dto.backgroundTheme }),
+      },
+    });
   }
 
   async hasProfile(userId: string): Promise<boolean> {
-    const count = await this.profileRepository.count({ where: { userId } });
+    const count = await this.prisma.creatorProfile.count({ where: { userId } });
     return count > 0;
   }
 }

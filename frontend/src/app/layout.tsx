@@ -13,8 +13,25 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "BioFound - Creator Directory",
-  description: "Discover and connect with creators in your niche",
+  title: "biofound. | SEO Link in Bio for Creators",
+  description: "Create a Google-indexed creator profile. Your link in bio page that actually ranks in search. Free forever, built for discovery.",
+  keywords: "link in bio, creator profile, SEO link in bio, Google indexed bio, creator landing page, OnlyFans link in bio",
+  openGraph: {
+    title: "biofound. | SEO Link in Bio for Creators",
+    description: "The only link in bio tool built for organic discovery. Create your creator profile and get indexed by Google—free forever.",
+    type: "website",
+    url: "https://biofound.app",
+    siteName: "biofound.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "biofound. | SEO Link in Bio for Creators",
+    description: "The only link in bio tool built for organic discovery. Get indexed by Google—free forever.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "any" },

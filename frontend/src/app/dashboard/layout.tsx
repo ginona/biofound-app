@@ -32,8 +32,8 @@ export default async function DashboardLayout({
       {/* Dashboard Header */}
       <header className="bg-card border-b border-border">
         <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
-          <Link href="/dashboard" className="text-xl font-semibold text-foreground">
-            BioFound
+          <Link href="/dashboard" className="text-xl font-semibold tracking-tight text-foreground">
+            biofound<span className="text-primary">.</span>
           </Link>
 
           <nav className="flex items-center gap-4">

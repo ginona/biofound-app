@@ -38,7 +38,7 @@ export default async function SignInPage() {
       <div className="max-w-sm w-full">
         <div className="text-center mb-8">
           <h1 className="text-xl font-semibold text-foreground mb-2">
-            Sign in to BioFound
+            Sign in to biofound.
           </h1>
           <p className="text-sm text-muted-foreground">
             Create your profile and get discovered

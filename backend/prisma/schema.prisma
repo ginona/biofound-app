@@ -1,0 +1,86 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Auth.js tables (managed by frontend, but included here to prevent deletion)
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+}
+
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+}
+
+// Backend models
+model CreatorProfile {
+  id              String   @id @default(uuid())
+  userId          String   @unique @db.VarChar(30)
+  username        String   @unique @db.VarChar(30)
+  displayName     String   @db.VarChar(100)
+  bio             String?  @db.Text
+  category        String   @db.VarChar(50)
+  tags            String[]
+  city            String?  @db.VarChar(100)
+  country         String?  @db.VarChar(100)
+  linkInstagram   String?  @db.VarChar(255)
+  linkTwitter     String?  @db.VarChar(255)
+  linkOnlyfans    String?  @db.VarChar(255)
+  linkWebsite     String?  @db.VarChar(255)
+  seoTitle        String?  @db.VarChar(60)
+  seoDescription  String?  @db.VarChar(160)
+  longBio         String?  @db.Text
+  backgroundTheme Int      @default(0) @db.SmallInt
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([userId], name: "idx_cp_user_id")
+  @@index([username], name: "idx_cp_username")
+  @@index([category], name: "idx_cp_category")
+  @@index([country], name: "idx_cp_country")
+  @@map("creator_profiles")
+}

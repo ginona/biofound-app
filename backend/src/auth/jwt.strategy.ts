@@ -2,6 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
+import { PrismaService } from '../prisma/prisma.service';
 
 export interface JwtPayload {
   sub: string; // User ID from Auth.js
@@ -13,7 +14,10 @@ export interface JwtPayload {
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor(configService: ConfigService) {
+  constructor(
+    configService: ConfigService,
+    private readonly prisma: PrismaService,
+  ) {
     const secret = configService.get<string>('JWT_SECRET');
     if (!secret) {
       throw new Error('JWT_SECRET is not configured');
@@ -26,12 +30,16 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  validate(payload: JwtPayload): JwtPayload {
-    // Payload is already verified by passport-jwt
-    // Just ensure we have the required fields
+  async validate(payload: JwtPayload): Promise<JwtPayload> {
     if (!payload.sub) {
       throw new UnauthorizedException('Invalid token payload');
     }
+
+    const user = await this.prisma.user.findUnique({ where: { id: payload.sub } });
+    if (!user) {
+      throw new UnauthorizedException('User no longer exists');
+    }
+
     return payload;
   }
 }

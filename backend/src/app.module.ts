@@ -1,10 +1,9 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { CreatorsModule } from './creators/creators.module';
 import { DirectoryModule } from './directory/directory.module';
-import { CreatorProfile } from './creators/creator-profile.entity';
+import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
   imports: [
@@ -14,19 +13,8 @@ import { CreatorProfile } from './creators/creator-profile.entity';
       envFilePath: '.env',
     }),
 
-    // Database connection
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        url: configService.get<string>('DATABASE_URL'),
-        entities: [CreatorProfile],
-        synchronize: configService.get<string>('NODE_ENV') === 'development',
-        logging: configService.get<string>('NODE_ENV') === 'development',
-        ssl: configService.get<string>('NODE_ENV') === 'production' ? { rejectUnauthorized: false } : false,
-      }),
-      inject: [ConfigService],
-    }),
+    // Database
+    PrismaModule,
 
     // Feature modules
     AuthModule,

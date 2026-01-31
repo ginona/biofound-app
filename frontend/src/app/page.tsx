@@ -1,6 +1,69 @@
 import Link from "next/link";
 import { Header, Footer } from "@/components";
 
+const FAQ_SCHEMA = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is a link in bio tool?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A link in bio tool lets you create a single landing page with multiple links to share in your social media bio. Instead of one link, you can showcase all your platforms, products, and content in one place."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is biofound. free to use?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, biofound. is completely free. Create your profile, add unlimited links, and get discovered on Google at no cost."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How is biofound. different from Linktree?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Unlike Linktree, biofound. profiles are built for SEO and can rank on Google search results. Your profile is indexed by search engines, helping fans discover you organically—not just through social media."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can my biofound. profile appear on Google?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes! Every biofound. profile is optimized for search engines with proper meta tags, schema markup, and fast loading speeds. Your profile can appear when people search for creators in your niche and location."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What platforms can I link to?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "You can link to any platform including Instagram, TikTok, Twitter/X, OnlyFans, Patreon, YouTube, your personal website, and more. There's no limit to the number of links."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I need technical skills to create a profile?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No technical skills required. Sign up with Google, choose your username, add your bio and links, and your SEO-optimized profile is live in minutes."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is my personal information kept private?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Absolutely. You control what appears on your public profile. Your email and login details are never shown. Share only your creator persona, not your real identity."
+      }
+    }
+  ]
+};
+
 const NICHES = [
   "Fitness",
   "Cosplay",
@@ -50,6 +113,10 @@ const FEATURES = [
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(FAQ_SCHEMA) }}
+      />
       <Header />
 
       <main className="flex-1">
@@ -57,13 +124,13 @@ export default function LandingPage() {
         <section className="px-4 py-16 md:py-24">
           <div className="max-w-3xl mx-auto text-center">
             <p className="inline-block rounded-full border border-border bg-card px-4 py-1.5 text-sm text-muted-foreground mb-6">
-              For creators
+              Free link in bio tool
             </p>
             <h1 className="text-4xl md:text-5xl font-semibold tracking-tight text-balance mb-4">
-              Your profile appears when people search on Google
+              The Link in Bio That Ranks on Google
             </h1>
             <p className="text-sm text-muted-foreground text-balance mb-8 max-w-xl mx-auto">
-              One simple page with your bio and links. We make it visible to search engines so fans can find you—no ads, no paid promotion.
+              The only link in bio tool built for organic discovery. Create your creator profile and get indexed by Google—free forever.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center mb-12">
               <Link
@@ -116,7 +183,7 @@ export default function LandingPage() {
           <div className="max-w-3xl mx-auto">
             <h2 className="text-xl font-semibold tracking-tight text-center mb-2">Searches people actually make</h2>
             <p className="text-sm text-muted-foreground text-center mb-8">
-              These are the kinds of queries people type on Google. Your BioFound profile can show up for searches like these in your niche and location.
+              These are the kinds of queries people type on Google. Your biofound. profile can show up for searches like these in your niche and location.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {SEARCH_EXAMPLES.map((query) => (
@@ -177,7 +244,7 @@ export default function LandingPage() {
         {/* Benefits: 4 cards, no decorative icons */}
         <section className="px-4 py-12 md:py-16 border-t border-border bg-secondary/40">
           <div className="max-w-5xl mx-auto">
-            <h2 className="text-xl font-semibold tracking-tight text-center mb-2">Why use BioFound</h2>
+            <h2 className="text-xl font-semibold tracking-tight text-center mb-2">Why use biofound.</h2>
             <p className="text-sm text-muted-foreground text-center mb-8">Privacy and organic growth</p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {BENEFITS.map((benefit) => (

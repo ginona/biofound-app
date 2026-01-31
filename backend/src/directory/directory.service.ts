@@ -1,7 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { CreatorProfile } from '../creators/creator-profile.entity';
+import { PrismaService } from '../prisma/prisma.service';
+import { CreatorProfile } from '@prisma/client';
 import { SearchQueryDto } from './dto/search-query.dto';
 
 export interface PaginatedResult<T> {
@@ -16,55 +15,54 @@ export interface PaginatedResult<T> {
 
 @Injectable()
 export class DirectoryService {
-  constructor(
-    @InjectRepository(CreatorProfile)
-    private readonly profileRepository: Repository<CreatorProfile>,
-  ) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async search(query: SearchQueryDto): Promise<PaginatedResult<CreatorProfile>> {
     const { q, category, country, city, tag, page = 1, limit = 20 } = query;
 
-    const qb = this.profileRepository.createQueryBuilder('profile');
+    const where: any = {};
 
     // Keyword search (display_name, bio, tags)
     if (q) {
-      qb.andWhere(
-        '(profile.displayName ILIKE :q OR profile.bio ILIKE :q OR :q = ANY(profile.tags))',
-        { q: `%${q}%` },
-      );
+      where.OR = [
+        { displayName: { contains: q, mode: 'insensitive' } },
+        { bio: { contains: q, mode: 'insensitive' } },
+        { tags: { has: q } },
+      ];
     }
 
     // Filter by category
     if (category) {
-      qb.andWhere('profile.category = :category', { category });
+      where.category = category;
     }
 
     // Filter by country
     if (country) {
-      qb.andWhere('profile.country ILIKE :country', { country: `%${country}%` });
+      where.country = { contains: country, mode: 'insensitive' };
     }
 
     // Filter by city
     if (city) {
-      qb.andWhere('profile.city ILIKE :city', { city: `%${city}%` });
+      where.city = { contains: city, mode: 'insensitive' };
     }
 
     // Filter by specific tag
     if (tag) {
-      qb.andWhere(':tag = ANY(profile.tags)', { tag });
+      where.tags = { has: tag };
     }
 
     // Get total count
-    const total = await qb.getCount();
+    const total = await this.prisma.creatorProfile.count({ where });
 
     // Apply pagination
     const skip = (page - 1) * limit;
-    qb.skip(skip).take(limit);
 
-    // Order by most recent
-    qb.orderBy('profile.createdAt', 'DESC');
-
-    const data = await qb.getMany();
+    const data = await this.prisma.creatorProfile.findMany({
+      where,
+      skip,
+      take: limit,
+      orderBy: { createdAt: 'desc' },
+    });
 
     return {
       data,
@@ -78,7 +76,7 @@ export class DirectoryService {
   }
 
   async findByUsername(username: string): Promise<CreatorProfile> {
-    const profile = await this.profileRepository.findOne({
+    const profile = await this.prisma.creatorProfile.findUnique({
       where: { username: username.toLowerCase() },
     });
 
