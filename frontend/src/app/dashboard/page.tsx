@@ -90,13 +90,7 @@ export default async function DashboardPage() {
           <div>
             <p className="text-sm text-muted-foreground">Links</p>
             <p className="font-medium text-foreground">
-              {[
-                profile.linkInstagram,
-                profile.linkTwitter,
-                profile.linkOnlyfans,
-                profile.linkWebsite,
-              ].filter(Boolean).length}{" "}
-              added
+              {profile.links?.length || 0} added
             </p>
           </div>
           <div>
