@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreatorProfile } from '@prisma/client';
+import { CreatorProfile, Prisma } from '@prisma/client';
 import { CreateProfileDto, UpdateProfileDto } from './dto';
 
 @Injectable()
@@ -45,10 +45,7 @@ export class CreatorsService {
         tags: dto.tags || [],
         city: dto.city || null,
         country: dto.country || null,
-        linkInstagram: dto.linkInstagram || null,
-        linkTwitter: dto.linkTwitter || null,
-        linkOnlyfans: dto.linkOnlyfans || null,
-        linkWebsite: dto.linkWebsite || null,
+        links: (dto.links || []) as unknown as Prisma.InputJsonValue,
         seoTitle: dto.seoTitle || null,
         seoDescription: dto.seoDescription || null,
         longBio: dto.longBio || null,
@@ -75,10 +72,7 @@ export class CreatorsService {
         ...(dto.tags !== undefined && { tags: dto.tags || [] }),
         ...(dto.city !== undefined && { city: dto.city || null }),
         ...(dto.country !== undefined && { country: dto.country || null }),
-        ...(dto.linkInstagram !== undefined && { linkInstagram: dto.linkInstagram || null }),
-        ...(dto.linkTwitter !== undefined && { linkTwitter: dto.linkTwitter || null }),
-        ...(dto.linkOnlyfans !== undefined && { linkOnlyfans: dto.linkOnlyfans || null }),
-        ...(dto.linkWebsite !== undefined && { linkWebsite: dto.linkWebsite || null }),
+        ...(dto.links !== undefined && { links: (dto.links || []) as unknown as Prisma.InputJsonValue }),
         ...(dto.seoTitle !== undefined && { seoTitle: dto.seoTitle || null }),
         ...(dto.seoDescription !== undefined && { seoDescription: dto.seoDescription || null }),
         ...(dto.longBio !== undefined && { longBio: dto.longBio || null }),

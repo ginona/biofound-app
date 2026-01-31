@@ -1,3 +1,22 @@
+export type LinkType =
+  | "instagram"
+  | "twitter"
+  | "tiktok"
+  | "onlyfans"
+  | "fansly"
+  | "youtube"
+  | "twitch"
+  | "linkedin"
+  | "github"
+  | "website"
+  | "custom";
+
+export interface ProfileLink {
+  type: LinkType;
+  url: string;
+  label?: string;
+}
+
 export interface CreatorProfile {
   id: string;
   userId: string;
@@ -8,10 +27,7 @@ export interface CreatorProfile {
   tags: string[] | null;
   city: string | null;
   country: string | null;
-  linkInstagram: string | null;
-  linkTwitter: string | null;
-  linkOnlyfans: string | null;
-  linkWebsite: string | null;
+  links: ProfileLink[];
   // SEO Fields
   seoTitle: string | null;
   seoDescription: string | null;

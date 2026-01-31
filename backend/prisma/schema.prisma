@@ -67,10 +67,7 @@ model CreatorProfile {
   tags            String[]
   city            String?  @db.VarChar(100)
   country         String?  @db.VarChar(100)
-  linkInstagram   String?  @db.VarChar(255)
-  linkTwitter     String?  @db.VarChar(255)
-  linkOnlyfans    String?  @db.VarChar(255)
-  linkWebsite     String?  @db.VarChar(255)
+  links           Json     @default("[]")
   seoTitle        String?  @db.VarChar(60)
   seoDescription  String?  @db.VarChar(160)
   longBio         String?  @db.Text

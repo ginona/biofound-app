@@ -3,14 +3,16 @@ import {
   IsNotEmpty,
   IsOptional,
   IsArray,
-  IsUrl,
   IsInt,
   Min,
   Max,
   MaxLength,
   MinLength,
   ArrayMaxSize,
+  ValidateNested,
 } from 'class-validator';
+import { Type } from 'class-transformer';
+import { LinkDto } from './create-profile.dto';
 
 // Username is immutable, so it's not included in update DTO
 export class UpdateProfileDto {
@@ -49,24 +51,11 @@ export class UpdateProfileDto {
   country?: string;
 
   @IsOptional()
-  @IsUrl()
-  @MaxLength(255)
-  linkInstagram?: string;
-
-  @IsOptional()
-  @IsUrl()
-  @MaxLength(255)
-  linkTwitter?: string;
-
-  @IsOptional()
-  @IsUrl()
-  @MaxLength(255)
-  linkOnlyfans?: string;
-
-  @IsOptional()
-  @IsUrl()
-  @MaxLength(255)
-  linkWebsite?: string;
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => LinkDto)
+  @ArrayMaxSize(10)
+  links?: LinkDto[];
 
   // SEO Fields
   @IsOptional()

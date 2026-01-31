@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { ProfileLink } from "@/lib/types";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
 
@@ -14,14 +15,20 @@ export async function updateProfile(
   const bio = formData.get("bio") as string;
   const city = formData.get("city") as string;
   const country = formData.get("country") as string;
-  const linkInstagram = formData.get("linkInstagram") as string;
-  const linkTwitter = formData.get("linkTwitter") as string;
-  const linkOnlyfans = formData.get("linkOnlyfans") as string;
-  const linkWebsite = formData.get("linkWebsite") as string;
+  const linksJson = formData.get("links") as string;
   const longBio = formData.get("longBio") as string;
   const seoTitle = formData.get("seoTitle") as string;
   const seoDescription = formData.get("seoDescription") as string;
   const backgroundTheme = formData.get("backgroundTheme") as string;
+
+  // Parse and filter links (remove empty URLs)
+  let links: ProfileLink[] = [];
+  try {
+    const parsed = JSON.parse(linksJson || "[]");
+    links = parsed.filter((link: ProfileLink) => link.url && link.url.trim() !== "");
+  } catch {
+    links = [];
+  }
 
   try {
     const res = await fetch(`${API_URL}/profile`, {
@@ -36,10 +43,7 @@ export async function updateProfile(
         bio: bio || undefined,
         city: city || undefined,
         country: country || undefined,
-        linkInstagram: linkInstagram || undefined,
-        linkTwitter: linkTwitter || undefined,
-        linkOnlyfans: linkOnlyfans || undefined,
-        linkWebsite: linkWebsite || undefined,
+        links,
         longBio: longBio || undefined,
         seoTitle: seoTitle || undefined,
         seoDescription: seoDescription || undefined,

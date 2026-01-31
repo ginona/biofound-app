@@ -2,9 +2,23 @@ import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { Header, Footer, ProfileBackground } from "@/components";
 import { fetchApi } from "@/lib/api";
-import { CreatorProfile } from "@/lib/types";
+import { CreatorProfile, LinkType } from "@/lib/types";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://biofound.app";
+
+const LINK_DISPLAY: Record<LinkType, { label: string; isPrimary?: boolean }> = {
+  onlyfans: { label: "Subscribe on OnlyFans", isPrimary: true },
+  fansly: { label: "Subscribe on Fansly", isPrimary: true },
+  instagram: { label: "Instagram" },
+  twitter: { label: "Twitter / X" },
+  tiktok: { label: "TikTok" },
+  youtube: { label: "YouTube" },
+  twitch: { label: "Twitch" },
+  linkedin: { label: "LinkedIn" },
+  github: { label: "GitHub" },
+  website: { label: "Website" },
+  custom: { label: "Link" },
+};
 
 const CATEGORY_GRADIENTS: Record<string, string> = {
   fitness: "linear-gradient(135deg, #22c55e, #06b6d4)",
@@ -32,11 +46,7 @@ async function getCreator(username: string): Promise<CreatorProfile | null> {
 }
 
 function generateJsonLd(creator: CreatorProfile) {
-  const sameAs: string[] = [];
-  if (creator.linkInstagram) sameAs.push(creator.linkInstagram);
-  if (creator.linkTwitter) sameAs.push(creator.linkTwitter);
-  if (creator.linkOnlyfans) sameAs.push(creator.linkOnlyfans);
-  if (creator.linkWebsite) sameAs.push(creator.linkWebsite);
+  const sameAs: string[] = creator.links?.map((link) => link.url) || [];
 
   const jsonLd: Record<string, unknown> = {
     "@context": "https://schema.org",
@@ -137,11 +147,11 @@ export default async function CreatorPage({ params }: CreatorPageProps) {
   }
 
   const jsonLd = generateJsonLd(creator);
-  const hasLinks =
-    creator.linkInstagram ||
-    creator.linkTwitter ||
-    creator.linkOnlyfans ||
-    creator.linkWebsite;
+  const hasLinks = creator.links && creator.links.length > 0;
+
+  // Separate primary links (OnlyFans) from secondary links
+  const primaryLinks = creator.links?.filter((link) => LINK_DISPLAY[link.type]?.isPrimary) || [];
+  const secondaryLinks = creator.links?.filter((link) => !LINK_DISPLAY[link.type]?.isPrimary) || [];
 
   const avatarGradient = CATEGORY_GRADIENTS[creator.category.toLowerCase()] || CATEGORY_GRADIENTS.other;
   const hasTags = creator.tags && creator.tags.length > 0;
@@ -208,61 +218,37 @@ export default async function CreatorPage({ params }: CreatorPageProps) {
             {hasLinks && (
               <section className="pt-4 border-t border-border">
                 <ul className="space-y-2">
-                  {creator.linkOnlyfans && (
-                    <li>
+                  {/* Primary links (OnlyFans) - styled prominently */}
+                  {primaryLinks.map((link, index) => (
+                    <li key={`primary-${index}`}>
                       <a
-                        href={creator.linkOnlyfans}
+                        href={link.url}
                         target="_blank"
                         rel="noopener noreferrer nofollow"
                         className="flex items-center justify-between min-h-11 px-4 bg-primary text-primary-foreground rounded-xl text-sm font-medium hover:opacity-90"
                       >
-                        Subscribe on OnlyFans
+                        {link.label || LINK_DISPLAY[link.type]?.label || "Link"}
                         <span className="text-primary-foreground/80">&#8599;</span>
                       </a>
                     </li>
-                  )}
+                  ))}
 
-                  {creator.linkInstagram && (
-                    <li>
+                  {/* Secondary links */}
+                  {secondaryLinks.map((link, index) => (
+                    <li key={`secondary-${index}`}>
                       <a
-                        href={creator.linkInstagram}
+                        href={link.url}
                         target="_blank"
                         rel="noopener noreferrer nofollow"
                         className="flex items-center justify-between min-h-11 px-4 bg-secondary border border-border rounded-xl text-sm text-foreground hover:bg-secondary/80"
                       >
-                        <span className="font-medium">Instagram</span>
+                        <span className="font-medium">
+                          {link.label || LINK_DISPLAY[link.type]?.label || "Link"}
+                        </span>
                         <span className="text-muted-foreground">&#8599;</span>
                       </a>
                     </li>
-                  )}
-
-                  {creator.linkTwitter && (
-                    <li>
-                      <a
-                        href={creator.linkTwitter}
-                        target="_blank"
-                        rel="noopener noreferrer nofollow"
-                        className="flex items-center justify-between min-h-11 px-4 bg-secondary border border-border rounded-xl text-sm text-foreground hover:bg-secondary/80"
-                      >
-                        <span className="font-medium">Twitter / X</span>
-                        <span className="text-muted-foreground">&#8599;</span>
-                      </a>
-                    </li>
-                  )}
-
-                  {creator.linkWebsite && (
-                    <li>
-                      <a
-                        href={creator.linkWebsite}
-                        target="_blank"
-                        rel="noopener noreferrer nofollow"
-                        className="flex items-center justify-between min-h-11 px-4 bg-secondary border border-border rounded-xl text-sm text-foreground hover:bg-secondary/80"
-                      >
-                        <span className="font-medium">Website</span>
-                        <span className="text-muted-foreground">&#8599;</span>
-                      </a>
-                    </li>
-                  )}
+                  ))}
                 </ul>
               </section>
             )}

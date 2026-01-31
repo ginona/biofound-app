@@ -11,7 +11,37 @@ import {
   MinLength,
   Matches,
   ArrayMaxSize,
+  ValidateNested,
+  IsIn,
 } from 'class-validator';
+import { Type } from 'class-transformer';
+
+export class LinkDto {
+  @IsString()
+  @IsIn([
+    'instagram',
+    'twitter',
+    'tiktok',
+    'onlyfans',
+    'fansly',
+    'youtube',
+    'twitch',
+    'linkedin',
+    'github',
+    'website',
+    'custom',
+  ])
+  type: string;
+
+  @IsUrl({}, { message: 'Please enter a valid URL (e.g., https://instagram.com/username)' })
+  @MaxLength(500)
+  url: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(50)
+  label?: string;
+}
 
 export class CreateProfileDto {
   @IsString()
@@ -56,24 +86,11 @@ export class CreateProfileDto {
   country?: string;
 
   @IsOptional()
-  @IsUrl()
-  @MaxLength(255)
-  linkInstagram?: string;
-
-  @IsOptional()
-  @IsUrl()
-  @MaxLength(255)
-  linkTwitter?: string;
-
-  @IsOptional()
-  @IsUrl()
-  @MaxLength(255)
-  linkOnlyfans?: string;
-
-  @IsOptional()
-  @IsUrl()
-  @MaxLength(255)
-  linkWebsite?: string;
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => LinkDto)
+  @ArrayMaxSize(10)
+  links?: LinkDto[];
 
   // SEO Fields
   @IsOptional()
